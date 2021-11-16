@@ -12,12 +12,15 @@ public class EnemyController : MonoBehaviour
     public LayerMask wallLayerMask;
     public bool isGroundAhead;
 
+    [Header("Player Detection")]
+    public LineOfSight enemyLOS;
     private Rigidbody2D rigidbody;
 
     // Start is called before the first frame update
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
+        enemyLOS = GetComponent<LineOfSight>();
     }
 
     // Update is called once per frame
@@ -25,7 +28,11 @@ public class EnemyController : MonoBehaviour
     {
         LookAhead();
         LookInFront();
-        MoveEnemy();
+        if (!HasLOS())
+        {
+            MoveEnemy();
+        }
+        
     }
 
     private void LookAhead()
@@ -59,6 +66,18 @@ public class EnemyController : MonoBehaviour
     private void Flip()
     {
         transform.localScale = new Vector3(transform.localScale.x * -1.0f, transform.localScale.y, transform.localScale.z);
+    }
+
+    private bool HasLOS()
+    {
+        if (enemyLOS.listOfColliders.Count > 0)
+        {
+            if (enemyLOS.collidesWith.gameObject.name == "Player" && enemyLOS.listOfColliders[0].gameObject.name == "Player")
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // EVENTS

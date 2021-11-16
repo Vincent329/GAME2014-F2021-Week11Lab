@@ -45,14 +45,14 @@ public class PlayerBehaviour : MonoBehaviour
         {
             // Keyboard Input
             float y = Input.GetAxisRaw("Vertical") + joystick.Vertical;
-            float jump = Input.GetAxisRaw("Jump");
+            float jump = Input.GetAxisRaw("Jump") + ((UIController.jumpButtonPressed) ? 1f : 0f);
 
             // Check for Flip
 
             if (x != 0)
             {
                 x = FlipAnimation(x);
-                animatorController.SetInteger("AnimationState", (int) PlayerAnimationState.RUN); // RUN State
+                animatorController.SetInteger("AnimationState", (int)PlayerAnimationState.RUN); // RUN State
                 state = PlayerAnimationState.RUN;
             }
             else
@@ -60,7 +60,7 @@ public class PlayerBehaviour : MonoBehaviour
                 animatorController.SetInteger("AnimationState", (int)PlayerAnimationState.IDLE); // IDLE State
                 state = PlayerAnimationState.IDLE;
             }
-            
+
             // Touch Input
             //Vector2 worldTouch = new Vector2();
             //foreach (var touch in Input.touches)
@@ -73,8 +73,12 @@ public class PlayerBehaviour : MonoBehaviour
             // want to use the joystick instead
 
             float horizontalMoveForce = x * horizontalForce;
-            float jumpMoveForce = jump * verticalForce; 
 
+            float jumpMoveForce = jump * verticalForce;
+            if (UIController.jumpButtonPressed)
+            {
+                jumpMoveForce = jump * verticalForce;
+            }
             float mass = rigidbody.mass * rigidbody.gravityScale;
 
 
